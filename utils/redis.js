@@ -4,10 +4,12 @@ import { promisify } from 'util'
 
 class RedisClient {
     constructor() {
-        this.redisClient = redis.createClient()
+	this.verifyConnection = true;
+        this.redisClient = redis.createClient();
 
         this.redisClient.on('error', (err) => {
-            console.log(`Redis client not connected to the server: ${err}`)
+            console.log(`Redis client not connected to the server: ${err}`);
+	    this.verifyConnection = false;
         });
 
         this.redisClient.on('connect', () => {
@@ -15,13 +17,8 @@ class RedisClient {
         });
     }
 
-    IsAlive() {
-        this.redisClient.ping((err, resp) => {
-            if (err) {
-                return false;
-            }
-            return true;
-        })
+    isAlive() {
+	return this.verifyConnection
     }
 
     async get(key) {
@@ -35,12 +32,11 @@ class RedisClient {
     }
 
     async set(key, value, duration) {
-        const asyncSetEx = promisify(this.redisClient.setEx).bind(this.redisClient);
+        const asyncSetEx = promisify(this.redisClient.setex).bind(this.redisClient);
         try {
-            const resp = await asyncSetEx(key, duration, value,);
-            console.log(resp);
+            const resp = await asyncSetEx(key, duration, value);
         } catch(err) {
-            console.log(err)
+            console.log(err);
         }
     }
 
@@ -54,3 +50,7 @@ class RedisClient {
         }
     }
 }
+
+const redisClient = new RedisClient()
+
+module.exports = redisClient
