@@ -2,9 +2,9 @@ import { MongoClient } from 'mongodb';
 
 class DBClient {
     constructor() {
-        this.dbHost = process.argv[1] ? process.argv[1]: 'localhost';
-        this.dbPort = process.argv[2] ? process.argv[2]: '27017';
-        this.dbName = process.argv[3] ? process.argv[3]: 'files_manager';
+        this.dbHost = 'localhost';
+        this.dbPort = '27017';
+        this.dbName = 'files_manager';
         this.url = `mongodb://${this.dbHost}:${this.dbPort}`;
         this.dbClient =  null;
         this.verifyConnection = false;
@@ -46,12 +46,10 @@ class DBClient {
     }
 }
 
+let dbClient = new DBClient();
 
 (async () => {
-    dbClient = new DBClient();
-
     await dbClient.init()
-
-    module.exports = dbClient;
 })();
 
+module.exports = dbClient;
