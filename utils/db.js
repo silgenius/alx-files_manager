@@ -13,14 +13,17 @@ class DBClient {
 
     async init() {
         try {
-            this.dbClient = new MongoClient(this.url);
+            this.dbClient = new MongoClient(this.url, { 
+		    useNewUrlParser: true,
+		    useUnifiedTopology: true 
+	    });
             await this.dbClient.connect();
             this.verifyConnection = true;
 
             this.db = this.dbClient.db(this.dbName);
         } catch(err) {
             this.verifyConnection = false;
-            console.log('mongodb encountered an error');
+            console.log(`mongodb encountered an error: ${err}`);
         }
     }
 
