@@ -4,22 +4,24 @@ const redisClient = '../utils/redis';
 const dbConnection = () => {
 	return new Promise((resolve, reject) => {
 		let i = 0;
-		const repeatFct = async () => {
-			await setTimeout(() => {
+		const repeatFct = () => {
+			setTimeout(() => {
 				i += 1;
-			if (i >= 10) {
-				reject();
-			} else if (!dbClient.isAlive()) {
-				repeatFct()
-			}
-			else {
-				resolve()
-			}
+				if (i >= 10) {
+					reject();
+				}
+				else if (!dbClient.isAlive()) {
+					repeatFct();
+				}
+				else{
+					resolve();
+				}
 			}, 1000);
-			repeatFct();
-			}
-		});
-	};
+		}
+
+		repeatFct();
+	});
+}
 
 export async function getStatus(req, res) {
 	// verify mongodb connection
@@ -34,7 +36,7 @@ export async function getStatus(req, res) {
 
 export async function getStats(req, res) {
 	const userCount = await nbUsers();
-	const filesCount = awiat nbFiles ();
+	const filesCount = await nbFiles();
 
 	res.json({ users: userCount, files: filesCount });
 }
