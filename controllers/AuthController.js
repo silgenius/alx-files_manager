@@ -23,12 +23,12 @@ export async function getConnect(req, res) {
 	const user = await dbClient.findUser({ email: email });
 
 	if (!user) {
-		return res.status(400).json({ error: 'Unauthorized' });
+		return res.status(401).json({ error: 'Unauthorized' });
 	}
 
 	const hashedPassword = hashPassword(userDetails[1])
 	if (hashedPassword !== user.password) {
-		return res.status(400).json({ error: 'Unauthorized' });
+		return res.status(401).json({ error: 'Unauthorized' });
 	}
 
 	const token = randomString();
@@ -44,15 +44,15 @@ export async function getDisconnect(req, res) {
 	const key = 'auth_' + token;
 	const user_id = await redisClient.get(key);
 	if (!user_id) {
-		return res.status(400).json({ error: 'Unauthorized' });
+		return res.status(401).json({ error: 'Unauthorized' });
 	}
 
 	const user = await dbClient.findUser({ _id: new ObjectId(user_id) });
 	if (!user) {
-		return res.status(400).json({ error: 'Unauthorized' });
+		return res.status(401).json({ error: 'Unauthorized' });
 	}
 
 	await redisClient.del(key);
-	return res.status(204).end()
+	return res.status(204).json()
 }
 
