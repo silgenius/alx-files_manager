@@ -1,5 +1,5 @@
-import getStatus from '../controllers/AppController'
-import getStats from '../controllers/AppController'
+import { getStatus } from '../controllers/AppController'
+import { getStats } from '../controllers/AppController'
 
 const express = require('express');
 

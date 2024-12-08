@@ -1,5 +1,5 @@
-const dbClient = '../utils/db';
-const redisClient = '../utils/redis';
+import dbClient from '../utils/db';
+import redisClient from '../utils/redis';
 
 const dbConnection = () => {
 	return new Promise((resolve, reject) => {
@@ -35,8 +35,8 @@ export async function getStatus(req, res) {
 }
 
 export async function getStats(req, res) {
-	const userCount = await nbUsers();
-	const filesCount = await nbFiles();
+	const userCount = await dbClient.nbUsers();
+	const filesCount = await dbClient.nbFiles();
 
 	res.json({ users: userCount, files: filesCount });
 }
