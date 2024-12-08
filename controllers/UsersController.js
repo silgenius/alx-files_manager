@@ -32,7 +32,7 @@ export async function postNew(req, res) {
 		}
 	)
 
-	return res.json(
+	return res.status(201).json(
 		{
 			id: newUser.insertedId,
 			email: email
