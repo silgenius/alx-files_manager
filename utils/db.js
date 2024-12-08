@@ -44,6 +44,23 @@ class DBClient {
             return result
         }
     }
+
+    async createUser(userDetails) {
+        if (this.db) {
+            let userCollection = this.db.collection('users');
+            const result = await userCollection.insertOne(userDetails);
+            return result;
+        }
+    }
+
+    async findUser(userDetails) {
+        if (this.db) {
+            let userCollection = this.db.collection('users');
+            const result = await userCollection.findOne(userDetails);
+            return result;
+        }
+    }
+
 }
 
 let dbClient = new DBClient();
