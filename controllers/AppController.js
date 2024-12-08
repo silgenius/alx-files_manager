@@ -31,12 +31,12 @@ export async function getStatus(req, res) {
 	// verify redis connection
 	const isRedisConnected = redisClient.isAlive();
 
-	res.json({ "redis": isRedisConnected, "db": isMongoConnected });
+	return res.json({ "redis": isRedisConnected, "db": isMongoConnected });
 }
 
 export async function getStats(req, res) {
 	const userCount = await dbClient.nbUsers();
 	const filesCount = await dbClient.nbFiles();
 
-	res.json({ users: userCount, files: filesCount });
+	return res.json({ users: userCount, files: filesCount });
 }
