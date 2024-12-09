@@ -120,12 +120,6 @@ export async function getIndex(req, res) {
 	}
 
 	let { parentId, page } = req.query
-	if (parentId) {
-		const file = await dbClient.findFile({ _id: new ObjectId(parentId) });
-		if (file && file.type !== 'folder') {
-			return res.json([]);
-		}
-	}
 
 	page = page ? page * 20 : 0;
 	parentId = parentId ? { parentId: new ObjectId(parentId) } : {}
