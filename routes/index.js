@@ -5,6 +5,8 @@ import { getConnect } from '../controllers/AuthController';
 import { getDisconnect } from '../controllers/AuthController';
 import { getMe } from '../controllers/UsersController';
 import { postUpload } from '../controllers/FilesController'
+import { getShow } from '../controllers/FilesController'
+import { getIndex } from '../controllers/FilesController'
 
 const express = require('express');
 
@@ -17,5 +19,7 @@ router.get('/connect', getConnect);
 router.get('/disconnect', getDisconnect);
 router.get('/users/me', getMe);
 router.post('/files', postUpload);
+router.get('/files/:id', getShow);
+router.get('/files', getIndex);
 
 module.exports = router;
