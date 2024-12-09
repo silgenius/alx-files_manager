@@ -1,6 +1,8 @@
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 const { ObjectId } = require('mongodb');
+import { randomString } from './AuthController';
+const fs = require('fs');
 
 export async function postUpload(req, res) {
 	const token = req.get('X-Token');
@@ -55,4 +57,35 @@ export async function postUpload(req, res) {
 		resp['id'] = newFile.insertedId
 		return res.status(200).json(resp);
 	}
+
+	const folderPath = '/tmp/files_manager';
+
+	// Create folder path dir if not exist
+	fs.mkdir(folderPath, { recursive: true }, (err) => {
+		if (err) {
+			console.log('Error creating folder');
+			return;
+		};
+
+		// Write to file
+		const fileName = randomString();
+		const filePath = folderPath + fileName;
+		const fileData = Buffer.from(data, 'base64');
+		fs.writeFile(filePath, fileData, (err) => {
+			if (err) {
+				console.log('Error writing to file');
+				return
+			};
+
+			console.log('Writing to file was successful');
+		});
+
+		fileDetails['localPath'] = filePath;
+	});
+
+
+	const newFile = await createFile(fileDetails);
+	const { _id, localPath, ...resp } = newFile.ops[0];
+	resp['id'] = newFile.insertedId
+	return res.status(200).json(resp);
 }
