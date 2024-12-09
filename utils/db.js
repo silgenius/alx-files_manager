@@ -64,6 +64,22 @@ class DBClient {
         }
     }
 
+    async createFile(fileDetails) {
+        if (this.db) {
+            let fileCollection = this.db.collection('files');
+            const result = await userCollection.insertOne(fileDetails);
+            return result;
+        }
+    }
+
+    async findFile(fileDetails) {
+        if (this.db) {
+            let fileCollection = this.db.collection('files');
+            const result = await userCollection.findOne(fileDetails);
+            return result;
+        }
+    }
+
 }
 
 let dbClient = new DBClient();
