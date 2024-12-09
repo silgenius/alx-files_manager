@@ -79,3 +79,72 @@ export async function postUpload(req, res) {
 		console.log(`Error occured: ${err}`);
 	}
 }
+
+export async function getShow(req, res) {
+	const token = req.get('X-Token');
+	const key = 'auth_' + token;
+	const user_id = await redisClient.get(key);
+	if (!user_id) {
+		return res.status(401).json({ error: 'Unauthorized' });
+	}
+
+	const user = await dbClient.findUser({ _id: new ObjectId(user_id) });
+	if (!user) {
+		return res.status(401).json({ error: 'Unauthorized' });
+	}
+
+	const { id } = req.params;
+	if (!id) {
+		console.log('mistake');
+	}
+	const result = await dbClient.findFile({ _id: new ObjectId(id) });
+
+	if (!result) {
+		return res.status(404).json({ error: 'Not found' });
+	}
+
+	const { _id, localPath, ...resp } = result;
+	resp["id"] = _id;
+
+	return res.json(resp);
+}
+
+export async function getIndex(req, res) {
+	const token = req.get('X-Token');
+	const key = 'auth_' + token;
+	const user_id = await redisClient.get(key);
+	if (!user_id) {
+		return res.status(401).json({ error: 'Unauthorized' });
+	}
+
+	const user = await dbClient.findUser({ _id: new ObjectId(user_id) });
+	if (!user) {
+		return res.status(401).json({ error: 'Unauthorized' });
+	}
+
+	let { parentId, page } = req.query
+	const file = await dbClient.findFile({ _id: new ObjectId(parentId) });
+	if (file && file.type !== 'folder') {
+		return res.json([]);
+	}
+
+	page = page ? page : 0;
+	parentId = parentId ? { parentId: new ObjectId(parentId) } : {}
+	const pipeline = [
+		{ $match: parentId },
+		{ $skip: page * 20 },
+		{ $limit: 20 },
+		{ $project: {
+			id: "$_id",
+			userId: "$userId",
+			name: "$name",
+			type: "$type",
+			isPublic: "$isPublic",
+			parentId: "$parentId" }
+		},
+		{ $project: { _id: 0 } }
+	];
+
+	const result = await dbClient.findFiles(pipeline);
+	return res.json(result);
+}
