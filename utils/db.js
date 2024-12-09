@@ -67,7 +67,7 @@ class DBClient {
     async createFile(fileDetails) {
         if (this.db) {
             let fileCollection = this.db.collection('files');
-            const result = await userCollection.insertOne(fileDetails);
+            const result = await fileCollection.insertOne(fileDetails);
             return result;
         }
     }
@@ -75,7 +75,7 @@ class DBClient {
     async findFile(fileDetails) {
         if (this.db) {
             let fileCollection = this.db.collection('files');
-            const result = await userCollection.findOne(fileDetails);
+            const result = await fileCollection.findOne(fileDetails);
             return result;
         }
     }
