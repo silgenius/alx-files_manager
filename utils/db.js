@@ -80,6 +80,14 @@ class DBClient {
         }
     }
 
+    async findFiles(pipeline) {
+        if (this.db) {
+            let fileCollection = this.db.collection('files');
+            const result = await fileCollection.aggregate(pipeline).toArray();
+            return result;
+        }
+    }
+
 }
 
 let dbClient = new DBClient();
