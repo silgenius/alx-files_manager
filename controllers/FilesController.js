@@ -44,10 +44,10 @@ export async function postUpload(req, res) {
 	}
 
 	const fileDetails = {
-		userId: user._id.toString(),
+		userId: user._id,
 		name: name,
 		type: type,
-		parentId: parentId ? parentId : 0,
+		parentId: parentId ? new ObjectId(parentId) : 0,
 		isPublic: isPublic ? isPublic : false,
 	}
 
@@ -58,13 +58,12 @@ export async function postUpload(req, res) {
 		return res.status(201).json(resp);
 	}
 
-	const folderPath = '/tmp/files_manager';
+	const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
 
 	try {
 		// Create folder path dir if not exist
 		await fs.mkdir(folderPath, { recursive: true });
 
-		console.log('herre');
 		// Create file containing provided data
 		const fileName = randomString();
                 const filePath = folderPath + '/' + fileName;
