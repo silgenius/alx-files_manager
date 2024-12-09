@@ -103,7 +103,7 @@ export async function getShow(req, res) {
 	const { _id, localPath, ...resp } = result;
 	resp["id"] = _id;
 
-	return res.json(resp);
+	return res.status(200).json(resp);
 }
 
 export async function getIndex(req, res) {
@@ -122,7 +122,12 @@ export async function getIndex(req, res) {
 	let { parentId, page } = req.query
 
 	page = page ? page * 20 : 0;
-	parentId = parentId ? { parentId: new ObjectId(parentId) } : {}
+	if (parentId == 0) {
+		parentId = { parentId: 0 };
+	} else {
+		parentId = parentId ? { parentId: new ObjectId(parentId) } : {}
+	}
+
 	const pipeline = [
 		{ $match: parentId },
 		{ $skip: page },
@@ -139,5 +144,5 @@ export async function getIndex(req, res) {
 	];
 
 	const result = await dbClient.findFiles(pipeline);
-	return res.json(result);
+	return res.status(200).json(result);
 }
