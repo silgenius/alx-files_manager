@@ -55,7 +55,7 @@ export async function postUpload(req, res) {
 		const newFile = await dbClient.createFile(fileDetails);
 		const { _id, ...resp } = newFile.ops[0];
 		resp['id'] = newFile.insertedId
-		return res.status(200).json(resp);
+		return res.status(201).json(resp);
 	}
 
 	const folderPath = '/tmp/files_manager';
@@ -75,7 +75,7 @@ export async function postUpload(req, res) {
 		const newFile = await dbClient.createFile(fileDetails);
                 const { _id, localPath, ...resp } = newFile.ops[0];
                 resp['id'] = newFile.insertedId;
-                return res.status(200).json(resp);
+                return res.status(201).json(resp);
 	} catch(err) {
 		console.log(`Error occured: ${err}`);
 	}
