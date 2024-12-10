@@ -227,7 +227,7 @@ export async function getFile(req, res) {
 	}
 
 	try {
-		const data = await fs.readFile(file.localPath, 'utf8')
+		const data = await fs.readFile(file.localPath)
 		const dataMimeType = mime.lookup(file.name)
 		res.set('Content-Type', dataMimeType);
 		res.send(data);
