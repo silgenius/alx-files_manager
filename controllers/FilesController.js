@@ -1,14 +1,14 @@
 /* eslint-disable consistent-return */
+/* eslint-disable no-unused-vars */
 
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 import { randomString } from './AuthController';
-import { fileQueue } from '../worker'
+import fileQueue from '../worker';
 
 const { ObjectId } = require('mongodb');
 const fs = require('fs').promises;
 const mime = require('mime-types');
-
 
 export async function postUpload(req, res) {
   const token = req.get('X-Token');
@@ -83,9 +83,15 @@ export async function postUpload(req, res) {
     const { _id, localPath, ...resp } = newFile.ops[0];
     resp.id = newFile.insertedId;
 
-    // Generate Thumbnail
-    const job = await fileQueue.add({ fileId: resp.id.toString(), userId: resp.userId.toString() });
-
+    // Add job to Generate image Thumbnail
+    if (type === 'image') {
+      const job = await fileQueue.add(
+        {
+          fileId: resp.id.toString(),
+          userId: resp.userId.toString(),
+        },
+      );
+    }
     return res.status(201).json(resp);
   } catch (err) {
     console.log(`Error occured: ${err}`);
@@ -240,9 +246,9 @@ export async function getFile(req, res) {
     res.status(400).json({ error: "A folder doesn't have content" });
   }
 
-  let filePath = file.localPath
+  let filePath = file.localPath;
   if (size) {
-    filePath += '_' + size;
+    filePath += `_${size}`;
   }
 
   try {
@@ -256,6 +262,7 @@ export async function getFile(req, res) {
   }
 }
 
+// Log job completion or failure
 fileQueue.on('failed', (job, err) => {
   console.log(`Job ${job.id} failed with error: ${err.message}`);
 });
