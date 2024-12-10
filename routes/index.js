@@ -4,9 +4,11 @@ import { postNew } from '../controllers/UsersController';
 import { getConnect } from '../controllers/AuthController';
 import { getDisconnect } from '../controllers/AuthController';
 import { getMe } from '../controllers/UsersController';
-import { postUpload } from '../controllers/FilesController'
-import { getShow } from '../controllers/FilesController'
-import { getIndex } from '../controllers/FilesController'
+import { postUpload } from '../controllers/FilesController';
+import { getShow } from '../controllers/FilesController';
+import { getIndex } from '../controllers/FilesController';
+import { putPublish } from '../controllers/FilesController';
+import { putUnpublish } from '../controllers/FilesController';
 
 const express = require('express');
 
@@ -21,5 +23,7 @@ router.get('/users/me', getMe);
 router.post('/files', postUpload);
 router.get('/files/:id', getShow);
 router.get('/files', getIndex);
+router.put('/files/:id/publish', putPublish);
+router.put('/files/:id/unpublish', putUnpublish);
 
 module.exports = router;
