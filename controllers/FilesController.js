@@ -3,6 +3,7 @@ import dbClient from '../utils/db';
 const { ObjectId } = require('mongodb');
 import { randomString } from './AuthController';
 const fs = require('fs').promises;
+const mime = require('mime-types');
 
 export async function postUpload(req, res) {
 	const token = req.get('X-Token');
@@ -189,17 +190,50 @@ export async function putUnpublish(req, res) {
         }
 
         const { id } = req.params;
-        await dbClient.updateFile({ _id: new ObjectId(id) }, { $set: { isPublic: false } });
 
-	const result = 
-        if (!result) {
-                return res.status(404).json({ error: 'Not found' });
-        }
+        const result = await dbClient.findFile({ _id: new ObjectId(id) });
+	if (!result) {
+		return res.status(404).json({ error: 'Not found' });
+	}
 
+	await dbClient.updateFile({ _id: new ObjectId(id) }, { $set: { isPublic: false } });
 
-        const { _id, localPath, ...resp } = result;
-        resp["id"] = _id;
+	const { _id, localPath, ...resp } = result;
+	resp["id"] = _id;
 	resp.isPublic = false;
+	return res.status(200).json(resp);
+}
 
-        return res.status(200).json(resp);
+export async function getFile(req, res) {
+	const { id } = req.params;
+
+        const file = await dbClient.findFile({ _id: new ObjectId(id) });
+	if (!file) {
+		return res.status(404).json({ error: 'Not found' });
+	}
+
+	const token = req.get('X-Token');
+	const key = 'auth_' + token;
+	const user_id = await redisClient.get(key);
+
+	if (file.isPublic === false) {
+		if (!user_id || user_id !== file.userId.toString()) {
+			return res.status(404).json({ error: 'Not found' });
+		}
+	}
+
+	if (file.type === 'folder') {
+		res.status(400).json({ error: "A folder doesn't have content" });
+	}
+
+	try {
+		const data = await fs.readFile(file.localPath, 'utf8')
+		const dataMimeType = mime.lookup(file.name)
+		res.set('Content-Type', dataMimeType);
+		res.send(data);
+	} catch (err) {
+		console.log(err);
+		return res.status(404).json({ error: 'Not found' });
+	}
+
 }
