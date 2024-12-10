@@ -1,15 +1,11 @@
-import { getStatus } from '../controllers/AppController';
-import { getStats } from '../controllers/AppController';
-import { postNew } from '../controllers/UsersController';
-import { getConnect } from '../controllers/AuthController';
-import { getDisconnect } from '../controllers/AuthController';
-import { getMe } from '../controllers/UsersController';
-import { postUpload } from '../controllers/FilesController';
-import { getShow } from '../controllers/FilesController';
-import { getIndex } from '../controllers/FilesController';
-import { putPublish } from '../controllers/FilesController';
-import { putUnpublish } from '../controllers/FilesController';
-import { getFile } from '../controllers/FilesController';
+import { getStatus, getStats } from '../controllers/AppController';
+
+import { postNew, getMe } from '../controllers/UsersController';
+import { getConnect, getDisconnect } from '../controllers/AuthController';
+
+import {
+  postUpload, getShow, getIndex, putPublish, putUnpublish, getFile,
+} from '../controllers/FilesController';
 
 const express = require('express');
 
