@@ -87,7 +87,14 @@ class DBClient {
             return result;
         }
     }
-
+    
+    async updateFile(fileDetails, command) {
+	if (this.db) {
+            let fileCollection = this.db.collection('files');
+            const updateResult = await fileCollection.updateOne(fileDetails, command);
+            return updateResult
+	}
+    }
 }
 
 let dbClient = new DBClient();
