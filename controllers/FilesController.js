@@ -170,7 +170,7 @@ export async function putPublish(req, res) {
 	await dbClient.updateFile({ _id: new ObjectId(id) }, { $set: { isPublic: true } });
 
 	const { _id, localPath, ...resp } = result;
-	resp["id"] = _id;
+	resp["id"] = _id.toString();
 	resp.isPublic = true;
 
 	return res.status(200).json(resp);
@@ -199,7 +199,7 @@ export async function putUnpublish(req, res) {
 	await dbClient.updateFile({ _id: new ObjectId(id) }, { $set: { isPublic: false } });
 
 	const { _id, localPath, ...resp } = result;
-	resp["id"] = _id;
+	resp["id"] = _id.toString();
 	resp.isPublic = false;
 	return res.status(200).json(resp);
 }
