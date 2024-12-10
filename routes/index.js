@@ -9,6 +9,7 @@ import { getShow } from '../controllers/FilesController';
 import { getIndex } from '../controllers/FilesController';
 import { putPublish } from '../controllers/FilesController';
 import { putUnpublish } from '../controllers/FilesController';
+import { getFile } from '../controllers/FilesController';
 
 const express = require('express');
 
@@ -25,5 +26,6 @@ router.get('/files/:id', getShow);
 router.get('/files', getIndex);
 router.put('/files/:id/publish', putPublish);
 router.put('/files/:id/unpublish', putUnpublish);
+router.get('/files/:id/data', getFile);
 
 module.exports = router;
