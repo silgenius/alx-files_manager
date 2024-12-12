@@ -112,13 +112,17 @@ export async function getShow(req, res) {
   }
 
   const { id } = req.params;
-  const result = await dbClient.findFile({ _id: new ObjectId(id) });
+  const file = await dbClient.findFile({ _id: new ObjectId(id) });
 
-  if (!result) {
+  if (!file) {
     return res.status(404).json({ error: 'Not found' });
   }
 
-  const { _id, localPath, ...resp } = result;
+  if (file.userId !== user._id) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+
+  const { _id, localPath, ...resp } = file;
   resp.id = _id;
 
   return res.status(200).json(resp);
